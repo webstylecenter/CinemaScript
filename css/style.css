@@ -1,0 +1,24 @@
+#cinema {
+    background-color:black;
+    width:1200px;
+    margin:auto;
+}
+
+#cinema p {
+    color:white;
+}
+
+.seat {
+    color:white;
+    display:inline-block;
+    padding:10px 25px;
+    width:10px;
+}
+
+.taken {
+    background-color: #ff3f49;
+}
+
+.new {
+    background-color: #4858ff;
+}
