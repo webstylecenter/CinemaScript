@@ -1,6 +1,4 @@
 <?php
-
-
 //require 'functions/dbconfig.php';
 require 'functions/testcase_cinema.php';
 
@@ -18,13 +16,13 @@ require 'functions/testcase_cinema.php';
 
 <?php
 
-$cinema = new Cinema(71000);
+$cinema = new Cinema(20);
 echo '<pre>';
 ;
-$cinema->giveSeatNumbers(45000);
+$cinema->giveSeatNumbers(5);
 //print_r($cinema->availableSeatsGroups);
-//print_r($cinema->chosenSeats);
-print_r($cinema->count);
+print_r($cinema->chosenSeats);
+//print_r($cinema->count);
 
 echo '</pre>';
 

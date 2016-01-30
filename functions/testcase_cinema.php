@@ -51,21 +51,19 @@ class Cinema
             }
         }
         $this->availableSeatsGroups[($i-$groupSize)] = $groupSize;
-
+        print_r($this->availableSeatsGroups);
         return false;
     }
 
-    public function performSort()
+    public function sort()
     {
-        $sortedArray = [];
-        foreach ($this->availableSeatsGroups as $key => $value) {
-            if (isset($sortedArray[$value])) {
-                array_push($sortedArray[$value], $key);
-            } else {
-                $sortedArray[$value] = [$key];
+        $temp = $this->availableSeatsGroups;
+        uksort($this->availableSeatsGroups, function ($a,$b) use ($temp) {
+            if ($temp[$a] === $temp[$b]) {
+                return $a - $b;
             }
-        }
-        $this->availableSeatsGroups = $sortedArray;
+            return $temp[$b] - $temp[$a];
+        });
     }
 
     function giveSeatNumbers($visitors)
@@ -78,6 +76,9 @@ class Cinema
 
         if(!$this->findAvailableSeatGroups()) {
            // print_r($this->availableSeatsGroups);
+            $this->sort();
+            echo 'sorted:';
+            print_r($this->availableSeatsGroups);
             $this->findBestPositions();
         };
 
@@ -113,7 +114,7 @@ class Cinema
         //echo 'start while';
 
         while (list($key, $value) = each($this->availableSeatsGroups)) {
-            $this->putInSeats($key, ($value <= $queue ? $value : $queue));
+            $this->putInSeats($key, $value);
            // print_r($this->chosenSeats);
             $queue = $queue - $value;
           //  echo 'que: '.$queue;
@@ -126,7 +127,7 @@ class Cinema
 
     public function putInSeats($start, $amount) {
         for ($i = 0; $i < $amount; $i++) {
-          //  echo $this->seats[($start+$i)].' -> new <br />';
+            echo $this->seats[($start+$i)].' -> new <br />';
             $this->seats[($start+$i)] = 'new';
             array_push($this->chosenSeats, $start+$i);
         }
