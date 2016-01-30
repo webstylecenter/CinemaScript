@@ -6,23 +6,11 @@ class Cinema
     private $maxSeats;
     private $seats;
     private $visitors;
-    public $chosenSeats = [];
-    public $availableSeatsGroups = [];
+    private $chosenSeats = [];
+    private $availableSeatsGroups = [];
 
-    public $groupNr = 0;
-    public $groups = [];
-
-    public $count = [
-        'x' => 0,
-        'y' => 0,
-        'z' => 0,
-        'u' => 0,
-        'f' => 0,
-        'p' => 0,
-        'r'=> 0,
-        'fix'=>0
-    ];
-
+    private $groupNr = 0;
+    private $groups = [];
 
     public function __construct($maxSeats = 18)
     {
@@ -77,14 +65,12 @@ class Cinema
             $this->findBestPositions();
         };
 
-        return array(
-            'Chosen seats' => $this->chosenSeats
-        );
+        return $this->chosenSeats;
     }
 
     public function createSeats()
     {
-        for ($i = 0; $i < $this->maxSeats; $i++) { $this->count['z']++;
+        for ($i = 0; $i < $this->maxSeats; $i++) {
             if (rand(1, 4) == 1) {
                 $this->seats[$i] = 'taken';
                 continue;
