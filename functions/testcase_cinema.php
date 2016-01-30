@@ -8,7 +8,7 @@ class Cinema
     private $maxSeats;
     private $seats;
     private $visitors;
-    private $chosenSeats = array();
+    public $chosenSeats = array();
     public $availableSeatsGroups = array();
 
     public $count = array(
@@ -28,131 +28,109 @@ class Cinema
 
         $this->maxSeats = $maxSeats;
         $this->createSeats();
-        $this->countAvailableSeats();
-        $this->placeRandomPeople();
 
     }
 
-    function countAvailableSeats()
+    function findAvailableSeatGroups()
     {
-        $this->availableSeatsGroups[] = [
-            'min'=> 0,
-            'max'=>$this->maxSeats-1,
-            'size'=>$this->maxSeats-0
-        ];
-    }
-
-    function updateAvailableSeatsGroup($start, $amount, $isVisitor)
-    {
-
-        // echo '<p>Start</p>';
-        // print_r($this->availableSeatsGroups); echo '<br />';
-        foreach ($this->availableSeatsGroups as $i => $group){ $this->count['fix']++;
-
-            if ($group['min'] <= $start && $group['max'] >= $start) {
-
-                unset($this->availableSeatsGroups[$i]);
-
-                // Array ervoor
-                if (($start - $group['min']) !== 0 && ($start-$amount > 0)) {
-                    $this->availableSeatsGroups[] = [
-                        'min'=> $group['min'],
-                        'max'=> $start-$amount,
-                        'size'=> ($start - $group['min'])
-                    ];
+        $groupSize = 0;
+        for ($i = 0; $i < $this->maxSeats; $i++) {
+            if ($this->seats[$i] == 'taken') {
+                if ($groupSize > 0) {
+                    $this->availableSeatsGroups[($i-$groupSize)] = $groupSize;
                 }
-
-                // Plaats user
-                if ($isVisitor) {
-                    for ($x = 0; $x < $amount; $x++) {
-                        //echo 'Oud: ('.($start+$x).'-'.$amount.') '.$this->seats[($start+$x)]. ' -> new<br />';
-                        $this->seats[($start+$x)] = 'new';
-                        $this->chosenSeats[] = ($start+$x)+1;
-                    }
-                } else {
-                    $this->seats[$start] = 'taken';
+                $groupSize=0;
+            } else {
+                $groupSize++;
+                if ($groupSize >= $this->visitors) {
+                    $groupSize--;
+                    $this->putInSeats(($i-$groupSize), $this->visitors);
+                    echo 'Found at: '.($i-$groupSize);
+                    return true;
                 }
-
-                // Array erna
-                if (($group['max'] - ($start)) > 0) {
-                    $this->availableSeatsGroups[] = [
-                        'min'=> $start+$amount,
-                        'max'=> $group['max'],
-                        'size'=> ($group['max'] - ($start))
-                    ];
-                }
-                //usort($this->availableSeatsGroups, 'sortBySize');
-                //print_r($this->availableSeatsGroups); echo '<br />';
-                return;
             }
         }
+        $this->availableSeatsGroups[($i-$groupSize)] = $groupSize;
 
+        return false;
+    }
 
+    public function performSort()
+    {
+        $sortedArray = [];
+        foreach ($this->availableSeatsGroups as $key => $value) {
+            if (isset($sortedArray[$value])) {
+                array_push($sortedArray[$value], $key);
+            } else {
+                $sortedArray[$value] = [$key];
+            }
+        }
+        $this->availableSeatsGroups = $sortedArray;
     }
 
     function giveSeatNumbers($visitors)
     {
         $this->visitors = $visitors;
+
         if (!$this->seatsAvailable()) {
             return 'NULLIFY';
         }
-        $this->findBestPositions();
+
+        if(!$this->findAvailableSeatGroups()) {
+           // print_r($this->availableSeatsGroups);
+            $this->findBestPositions();
+        };
 
         return array(
             'Chosen seats' => $this->chosenSeats
         );
     }
 
-    public function placeRandomPeople()
-    {
-        for ($i = 0; $i < $this->maxSeats; $i++) { $this->count['x']++;
-            if (rand(1, 2) == 1) {
-
-                $this->updateAvailableSeatsGroup($i, 1, false);
-
-            }
-        }
-    }
-
     public function createSeats()
     {
         for ($i = 0; $i < $this->maxSeats; $i++) { $this->count['z']++;
+            if (rand(1, 4) == 1) {
+                $this->seats[$i] = 'taken';
+                continue;
+            }
             $this->seats[$i] = 'free';
         }
     }
 
     public function seatsAvailable()
     {
+       // TODO: Remove this at once!
         $seatUsage = array_count_values($this->seats);
         return ($seatUsage['free'] >= $this->visitors ? true : false);
-    }
-
-    public function placeVisitorsTogether($amount)
-    {
-
-        foreach ($this->availableSeatsGroups as $i => $group){
-            if ($group['size'] >= $amount) { //echo 'Groote past ('.$amount.') ';
-                $this->updateAvailableSeatsGroup($group['min'], $amount, true);
-                return true;
-            }
-        }
-        return false;
-
     }
 
     public function findBestPositions()
     {
 
-        $visitorQueue = $this->visitors;
-        while ($visitorQueue > 0) { $this->count['r']++;
-            for ($i = $visitorQueue; $i > 0; $i--) { $this->count['p']++;
-                if ($this->placeVisitorsTogether($i)) {
-                    // echo '<p>vis'.$visitorQueue.'  - '.$i.'</p>';
-                    $visitorQueue -= $i;
-                    $i = $visitorQueue;
-                }
+        $queue = $this->visitors;
+        //echo 'Available:';
+       // print_r($this->availableSeatsGroups);
+        //echo 'start while';
+
+        while (list($key, $value) = each($this->availableSeatsGroups)) {
+            $this->putInSeats($key, ($value <= $queue ? $value : $queue));
+           // print_r($this->chosenSeats);
+            $queue = $queue - $value;
+          //  echo 'que: '.$queue;
+            if ($queue <= 0) {
+                break;
             }
         }
+      //  echo 'einde while';
+    }
+
+    public function putInSeats($start, $amount) {
+        for ($i = 0; $i < $amount; $i++) {
+          //  echo $this->seats[($start+$i)].' -> new <br />';
+            $this->seats[($start+$i)] = 'new';
+            array_push($this->chosenSeats, $start+$i);
+        }
+
     }
 
     public function display()
@@ -162,20 +140,10 @@ class Cinema
 
         for ($i = 0; $i < $this->maxSeats; $i++) {
             $output .= '<div class="seat ' . $this->seats[$i] . '">'
-                . ($i + 1) .
+                . ($i + 0) .
                 '</div>';
         }
         return $output;
-    }
-
-}
-
-function sortBySize($x, $y)
-{
-    if ($x == $y) {
-        return 0;
-    } else {
-        return $x['min'] - $y['min'];
     }
 }
 
