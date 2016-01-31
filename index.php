@@ -9,7 +9,7 @@ require 'functions/testcase_cinema.php';
     <title>Bios</title>
     <link rel="stylesheet" href="css/style.css">
     <?php
-         echo '<meta http-equiv="refresh" content="0">';
+        // echo '<meta http-equiv="refresh" content="0">';
     ?>
 </head>
 <body>
