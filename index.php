@@ -1,9 +1,4 @@
-<?php
-//require 'functions/dbconfig.php';
-require 'functions/testcase_cinema.php';
-
-
-
+<?php require 'functions/testcase_cinema.php';
 ?><!DOCTYPE>
 <head>
     <title>Bios</title>
@@ -23,7 +18,7 @@ print_r($cinema->giveSeatNumbers(50));
 </pre>
 
 <div id="cinema">
-    <?php echo $cinema->display(); ?>
+    <?php echo $cinema->showSeats(); ?>
 </div>
 <p>&nbsp; </p>
 </body>
