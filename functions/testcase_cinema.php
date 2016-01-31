@@ -153,7 +153,7 @@ class Cinema
         $output = '';
         for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
             $output .= '<div class="seat ' . $this->seatList[$i] . '">'
-                . ($i + 0) .
+                . ($i + 1) .
                 '</div>';
         }
         return $output;
