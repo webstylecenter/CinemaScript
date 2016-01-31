@@ -107,7 +107,6 @@ class Cinema
     {
       ksort($array);
       arsort($array);
-      print_r($array);
       return $array;
     }
 
