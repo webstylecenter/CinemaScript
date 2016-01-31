@@ -9,7 +9,7 @@ class Cinema
     private $totalAmountOfSeats;
 
     /**
-     * @var
+     * @var array
      */
     private $seatList;
 
