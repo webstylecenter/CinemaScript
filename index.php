@@ -11,8 +11,8 @@
 <pre>
 <?php
 
-$cinema = new Cinema(200);
-$cinema->giveSeatNumbers(50);
+$cinema = new Cinema(30);
+$cinema->giveSeatNumbers(12);
 
 ?>
 </pre>

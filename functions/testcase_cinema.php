@@ -105,13 +105,10 @@ class Cinema
      */
     public function sortByValueAndKey($array)
     {
-        $temp = $array;
-        uksort($this->availableSeatsGroups, function ($a,$b) use ($temp) {
-            if ($temp[$a] === $temp[$b]) {
-                return $a - $b;
-            }
-            return $temp[$b] - $temp[$a];
-        });
+      ksort($array);
+      arsort($array);
+      print_r($array);
+      return $array;
     }
 
     private function placeVisitorsInBestAvailableGroups($visitors)
