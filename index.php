@@ -11,14 +11,14 @@
 <pre>
 <?php
 
-$cinema = new Cinema(20);
-print_r($cinema->giveSeatNumbers(10));
+$cinema = new Cinema(200);
+$cinema->giveSeatNumbers(50);
 
 ?>
 </pre>
 
 <div id="cinema">
-    <?php echo $cinema->showSeats(); ?>
+    <?php $cinema->showSeats(); ?>
 </div>
 <p>&nbsp; </p>
 </body>

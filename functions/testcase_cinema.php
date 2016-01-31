@@ -143,12 +143,10 @@ class Cinema
      */
     public function showSeats()
     {
-        $output = '';
         for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
-            $output .= '<div class="seat ' . $this->seatList[$i] . '">'
+            echo '<div class="seat ' . $this->seatList[$i] . '">'
                 . ($i + 1) .
                 '</div>';
         }
-        return $output;
     }
 }
