@@ -12,3 +12,6 @@ requirements:
 The script should return an array with chosen seats, and display a visual representation of the cinema floor.
 
 With performance in mind, this script runs in 4 seconds or less when placing a group over 750.000 visitors in a cinema with 2 million seats (with 1/4 already taken seats)
+
+Note:
+PHP 7 performs this script with much more performance and with much less memory usage. Recommended for stress testing.
