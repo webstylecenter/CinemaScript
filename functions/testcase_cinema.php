@@ -131,8 +131,9 @@ class Cinema
 
         $queue = $visitors;
         while (list($key, $value) = each($this->availableSeatsGroups)) {
-            $this->assignSeatToVisitor($key, $value);
-            $queue = $queue - $value;
+            $amount = ($value > $queue ? $queue : $value);
+            $this->assignSeatToVisitor($key, $amount);
+            $queue = $queue - $amount;
             if ($queue <= 0) {
                 break;
             }
@@ -144,6 +145,7 @@ class Cinema
      * @param int $amount
      */
     private function assignSeatToVisitor($start, $amount) {
+        echo '<p>'.$amount.'</p>';
         for ($i = 0; $i < $amount; $i++) {
             $this->seatList[($start+$i)] = 'new';
             array_push($this->chosenSeats, $start+$i);
