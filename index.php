@@ -11,29 +11,20 @@
 <pre>
 <?php
 
-$takenSeats = [
-    2 => true,
-    10 => true,
-    11 => true,
-    12 => true,
-    13 => true,
-    16 => true
-];
-$cinema = new Cinema(18, $takenSeats);
-$cinema->giveSeatNumbers(10);
 
-if (count($cinema->chosenSeats > 10)) {
-    echo '<h1 style="color:red;">To much! ('.count($cinema->chosenSeats).')</h1>';
-} else {
-    echo '<h3>Well Done! '.count($cinema->chosenSeats).'</h3>';
-}
+$takenSeats = NULL;
 
+$visitors = 16;
+$cinema = new Cinema(30, $takenSeats);
+$cinema->giveSeatNumbers($visitors);
+
+print_r($cinema->chosenSeats);
 
 ?>
 </pre>
 
 <div id="cinema">
-    <?php $cinema->showSeats(); ?>
+    <?php $cinema->showSeats();  ?>
 </div>
 <p>&nbsp; </p>
 </body>

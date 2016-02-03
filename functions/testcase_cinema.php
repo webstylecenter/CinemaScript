@@ -50,7 +50,6 @@ class Cinema
             for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
                 if (rand(1, 4) == 1) {
                     $this->seatList[$i] = 'taken';
-                    echo '['.$i.'] => true,<br />';
                     continue;
                 }
                 $this->seatList[$i] = 'free';
@@ -130,10 +129,30 @@ class Cinema
     {
 
         $queue = $visitors;
-        while (list($key, $value) = each($this->availableSeatsGroups)) {
-            $amount = ($value > $queue ? $queue : $value);
-            $this->assignSeatToVisitor($key, $amount);
-            $queue = $queue - $amount;
+        while (true) {
+
+            $bestKey = $bestValue = $groupAmount = NULL;
+
+            foreach ($this->availableSeatsGroups as $key => $value) {
+                $amount = ($value > $queue ? $queue : $value);
+                if ($amount <= $value) {
+                    if ($bestKey === NULL) {
+                        $bestKey = $key;
+                        $bestValue = $value;
+                        $groupAmount = $amount;
+                    } elseif ($key <= $bestKey && $value >= $queue) {
+                        $bestKey = $key;
+                        $bestValue = $value;
+                        $groupAmount = $amount;
+                    } else {
+                    }
+                }
+            }
+
+            $this->assignSeatToVisitor($bestKey, $groupAmount);
+            $queue = $queue - $groupAmount;
+            unset($this->availableSeatsGroups[$bestKey]);
+
             if ($queue <= 0) {
                 break;
             }
@@ -145,7 +164,6 @@ class Cinema
      * @param int $amount
      */
     private function assignSeatToVisitor($start, $amount) {
-        echo '<p>'.$amount.'</p>';
         for ($i = 0; $i < $amount; $i++) {
             $this->seatList[($start+$i)] = 'new';
             array_push($this->chosenSeats, $start+$i);
