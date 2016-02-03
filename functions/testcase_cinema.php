@@ -16,7 +16,7 @@ class Cinema
     /**
      * @var array
      */
-    private $chosenSeats = [];
+    public $chosenSeats = [];
 
     /**
      * @var array
@@ -27,24 +27,36 @@ class Cinema
      * Cinema constructor.
      * @param int $totalAmountOfSeats
      */
-    public function __construct($totalAmountOfSeats = 18)
+    public function __construct($totalAmountOfSeats = 18, $predefinedTakenSeats = NULL)
     {
         $this->totalAmountOfSeats = $totalAmountOfSeats;
-        $this->createSeatList();
+        $this->createSeatList($predefinedTakenSeats);
     }
 
     /**
      * Generates array with seat statuses
      */
-    private function createSeatList()
+    private function createSeatList($predefinedTakenSeats)
     {
-        for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
-            if (rand(1, 4) == 1) {
-                $this->seatList[$i] = 'taken';
-                continue;
+        if (is_array($predefinedTakenSeats)) {
+            for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
+                if (isset($predefinedTakenSeats[$i])) {
+                    $this->seatList[$i] = 'taken';
+                    continue;
+                }
+                $this->seatList[$i] = 'free';
             }
-            $this->seatList[$i] = 'free';
+        } else {
+            for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
+                if (rand(1, 4) == 1) {
+                    $this->seatList[$i] = 'taken';
+                    echo '['.$i.'] => true,<br />';
+                    continue;
+                }
+                $this->seatList[$i] = 'free';
+            }
         }
+
     }
 
     /**
