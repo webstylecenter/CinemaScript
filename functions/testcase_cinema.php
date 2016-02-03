@@ -16,7 +16,7 @@ class Cinema
     /**
      * @var array
      */
-    private $chosenSeats = [];
+    public $chosenSeats = [];
 
     /**
      * @var array
@@ -27,24 +27,35 @@ class Cinema
      * Cinema constructor.
      * @param int $totalAmountOfSeats
      */
-    public function __construct($totalAmountOfSeats = 18)
+    public function __construct($totalAmountOfSeats = 18, $predefinedTakenSeats = NULL)
     {
         $this->totalAmountOfSeats = $totalAmountOfSeats;
-        $this->createSeatList();
+        $this->createSeatList($predefinedTakenSeats);
     }
 
     /**
      * Generates array with seat statuses
      */
-    private function createSeatList()
+    private function createSeatList($predefinedTakenSeats)
     {
-        for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
-            if (rand(1, 4) == 1) {
-                $this->seatList[$i] = 'taken';
-                continue;
+        if (is_array($predefinedTakenSeats)) {
+            for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
+                if (isset($predefinedTakenSeats[$i])) {
+                    $this->seatList[$i] = 'taken';
+                    continue;
+                }
+                $this->seatList[$i] = 'free';
             }
-            $this->seatList[$i] = 'free';
+        } else {
+            for ($i = 0; $i < $this->totalAmountOfSeats; $i++) {
+                if (rand(1, 4) == 1) {
+                    $this->seatList[$i] = 'taken';
+                    continue;
+                }
+                $this->seatList[$i] = 'free';
+            }
         }
+
     }
 
     /**
@@ -118,9 +129,30 @@ class Cinema
     {
 
         $queue = $visitors;
-        while (list($key, $value) = each($this->availableSeatsGroups)) {
-            $this->assignSeatToVisitor($key, $value);
-            $queue = $queue - $value;
+        while (true) {
+
+            $bestKey = $bestValue = $groupAmount = NULL;
+
+            foreach ($this->availableSeatsGroups as $key => $value) {
+                $amount = ($value > $queue ? $queue : $value);
+                if ($amount <= $value) {
+                    if ($bestKey === NULL) {
+                        $bestKey = $key;
+                        $bestValue = $value;
+                        $groupAmount = $amount;
+                    } elseif ($key <= $bestKey && $value >= $queue) {
+                        $bestKey = $key;
+                        $bestValue = $value;
+                        $groupAmount = $amount;
+                    } else {
+                    }
+                }
+            }
+
+            $this->assignSeatToVisitor($bestKey, $groupAmount);
+            $queue = $queue - $groupAmount;
+            unset($this->availableSeatsGroups[$bestKey]);
+
             if ($queue <= 0) {
                 break;
             }
