@@ -13,8 +13,8 @@
 
 $start = microtime(true);
 
-$visitors = 16000;
-$maxAmount = 500000;
+$visitors = 300;
+$maxAmount = 800;
 $takenSeats = NULL;
 
 $cinema = new Cinema($maxAmount, $takenSeats);
